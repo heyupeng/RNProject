@@ -3,7 +3,7 @@
  * https://github.com/facebook/react-native
  *
  * @format
- * @flow
+ * @flow strict-local
  */
 
 import React from 'react';
@@ -16,25 +16,6 @@ import {
   StatusBar,
 } from 'react-native';
 
-React.Component.prototype.goBack = function(key = null) {
-  if (!this.props.navigation) {return;}
-
-  let navigation = this.props.navigation;
-  let parent = navigation.dangerouslyGetParent();
-  if (parent.index === 0) {
-    console.warn('This is top route.');
-    return;
-  }
-  navigation.goBack(key);
-}
-
-React.Component.prototype.navRouteState = function() {
-  if(!this.props.navigation) return;
-  let navigation = this.props.navigation;
-  let parent = navigation.dangerouslyGetParent();
-  console.log(JSON.stringify(parent.state));
- }
-
 import {
   Header,
   LearnMoreLinks,
@@ -43,77 +24,8 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-class C1 extends React.Component {
-  static navigationOptions = {
-    title: 'C',
-    headerTitle: 'C1',
-  };
-  static navigationConfig ={ 
-    headerMode: 'none'
-  }
-  
-  componentDidMount() {
-    this.navRouteState();
-  }
-  render() {
-    return (
-      <View style={{flex: 1, backgroundColor: 'red'}}
-      onNavigationStateChange={(prevNav, newNav, action) => {
-        console.group('Navigation Dispatchssss: ');
-        console.log('Action: ', action);
-        console.log('New State: ', newNav);
-        console.log('Last State: ', prevNav);
-        console.groupEnd();
-        nav.routes = newNav.routes;
-      
-      }}
-      >
-        <SafeAreaView style={{flex: 1, backgroundColor: 'yellow', paddingTop: 20}}>
-          <Text style={{backgroundColor: 'red'}} onPress={()=>{
-            this.goBack();
-          }}
-          >Go back</Text>
-          <View style={{flex: 1, margin: 0, backgroundColor: 'green'}}>
-            <Text style={{backgroundColor: 'red'}} onPress={()=>{
-            this.goBack();
-          }}
-          >Go back</Text>
-          </View>
-          
-        </SafeAreaView>
-      </View>
-    );
-  }
-}
-
-class C2 extends React.Component {
-  static navigationOptions = {
-    title: 'Welcome',
-  };
-  
-  componentDidMount() {
-    let navigation = this.props.navigation;
-    console.log(navigation);
-    console.log(JSON.stringify(navigation));
-    console.log(navigation.state.routes);
-    console.log(JSON.stringify(navigation.dangerouslyGetParent()));
-  }
-  render() {
-    return (
-      <View style={{flex: 1, backgroundColor: 'red'}}
-      onNavigationStateChange={(prevNav, newNav, action) => {
-        console.group('Navigation Dispatchssss: ');
-        console.log('Action: ', action);
-        console.log('New State: ', newNav);
-        console.log('Last State: ', prevNav);
-        console.groupEnd();
-        nav.routes = newNav.routes;
-      
-      }}
-       />
-    );
-  }
-}
+import {} from './classes/extension/index'
+import ExampleApp from './classes/ExampleApp'
 
 class App extends React.Component {
   static navigationOptions = {
@@ -125,7 +37,7 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    this.navRouteState();
+    console.log(App.name + ':' + JSON.stringify(this.routeState()))
   }
 
   render() {
@@ -169,9 +81,11 @@ class App extends React.Component {
                 </Text>
               </View>
               <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle} onPress={()=>{this.props.navigation.navigate('C1')}}>Demo</Text>
+                <Text style={styles.sectionTitle} 
+                onPress={()=>{this.props.navigation.navigate('ExampleApp')}}>
+                  Demo</Text>
                 <Text style={styles.sectionDescription}>
-                  :
+                Examples
                 </Text>
               </View>
               <LearnMoreLinks />
@@ -226,25 +140,8 @@ const styles = StyleSheet.create({
   },
 });
 
-/**
- * react-navigation v0.61 拆分分离
- * `npm add react-native-gesture-handler`;
- * `npm add react-navigation-stack # npm install --save react-navigation-stack`;
- * ios工程下 `pod install`;
- * 否则报错 `null is not an object (evaluating 'RNGestureHandlerModule.default.Direction') `
- * 链接 https://github.com/kmagiera/react-native-gesture-handler/issues/676
- * 
- * */ 
-
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-
-const routeConfigs = {
-  App: {screen: App},
-  C1:  {screen: C1,
-  },
-  C2:  {screen: C2},
-}
 
 const stackConfig = {
   navigationOptions: {
@@ -257,8 +154,7 @@ const stackConfig = {
 const StackNavigator = createStackNavigator(
   {
     App: {screen: App},
-    C1:  {screen: C1},
-    C2:  {screen: C2},
+    ExampleApp:  {screen: ExampleApp},
   },
   {
     navigationOptions: {
